@@ -57,25 +57,38 @@ public class BooleanSearchEngine implements SearchEngine {
                 }
             }
         }
-        for (Map.Entry<String, List<PageEntry>> map : queryList.entrySet()) {
-            Collections.sort(queryList.get(map.getKey()));
-        }
     }
 
 
     public List<PageEntry> searchImpl(String word) {
         List<PageEntry> pageEntries = new ArrayList<>();
+        List<PageEntry> pageEntries1 = new ArrayList<>();
         String[] words = word.split(" ");
         for (String word2 : words) {
-            if (word2.isEmpty()) {
-                continue;
-            }
+            if (word2.isEmpty()) continue;
             if (queryList.containsKey(word2)) {
                 pageEntries.addAll(queryList.get(word2));
-                return pageEntries;
             }
         }
-        return pageEntries;
+
+        for (PageEntry pageEntry : pageEntries) {
+            List<PageEntry> pageEntries2 = new ArrayList<>();
+            for (PageEntry entry : pageEntries) {
+                if (pageEntry == entry) continue;
+                if (pageEntry.getPdfName().equals(entry.getPdfName())) {
+                    pageEntries2.add(entry);
+                }
+            }
+            pageEntries2.add(pageEntry);
+            int count = 0;
+            for (PageEntry pageEntry1 : pageEntries2) {
+                count += pageEntry1.getCount();
+            }
+            pageEntries1.add(new PageEntry(pageEntry.getPdfName(), pageEntry.getPage(), count));
+        }
+        List<PageEntry> pEntry = new ArrayList<>(new HashSet<>(pageEntries1));
+        Collections.sort(pEntry);
+        return pEntry;
     }
 
 

@@ -10,10 +10,10 @@ public class Main {
         String value;
 
 
-        try (ServerSocket serverSocket = new ServerSocket(8989);) { // стартуем сервер один(!) раз
+        try (ServerSocket serverSocket = new ServerSocket(8989);) {
 
             System.out.println("Ожидание подключения...");
-            while (true) { // в цикле(!) принимаем подключения
+            while (true) {
                 try (
                         Socket socket = serverSocket.accept();
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
