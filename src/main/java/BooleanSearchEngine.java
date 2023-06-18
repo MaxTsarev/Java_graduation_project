@@ -61,32 +61,32 @@ public class BooleanSearchEngine implements SearchEngine {
 
 
     public List<PageEntry> searchImpl(String word) {
-        List<PageEntry> pageEntries = new ArrayList<>();
-        List<PageEntry> pageEntries1 = new ArrayList<>();
+        List<PageEntry> searchQueryPageList = new ArrayList<>();
+        List<PageEntry> mergeListOfPages = new ArrayList<>();
         String[] words = word.split(" ");
         for (String word2 : words) {
             if (word2.isEmpty()) continue;
             if (queryList.containsKey(word2)) {
-                pageEntries.addAll(queryList.get(word2));
+                searchQueryPageList.addAll(queryList.get(word2));
             }
         }
 
-        for (PageEntry pageEntry : pageEntries) {
-            List<PageEntry> pageEntries2 = new ArrayList<>();
-            for (PageEntry entry : pageEntries) {
+        for (PageEntry pageEntry : searchQueryPageList) {
+            List<PageEntry> intermediateListOfPages = new ArrayList<>();
+            for (PageEntry entry : searchQueryPageList) {
                 if (pageEntry == entry) continue;
                 if (pageEntry.getPdfName().equals(entry.getPdfName())) {
-                    pageEntries2.add(entry);
+                    intermediateListOfPages.add(entry);
                 }
             }
-            pageEntries2.add(pageEntry);
+            intermediateListOfPages.add(pageEntry);
             int count = 0;
-            for (PageEntry pageEntry1 : pageEntries2) {
-                count += pageEntry1.getCount();
+            for (PageEntry currentListPage : intermediateListOfPages) {
+                count += currentListPage.getCount();
             }
-            pageEntries1.add(new PageEntry(pageEntry.getPdfName(), pageEntry.getPage(), count));
+            mergeListOfPages.add(new PageEntry(pageEntry.getPdfName(), pageEntry.getPage(), count));
         }
-        List<PageEntry> pEntry = new ArrayList<>(new HashSet<>(pageEntries1));
+        List<PageEntry> pEntry = new ArrayList<>(new HashSet<>(mergeListOfPages));
         Collections.sort(pEntry);
         return pEntry;
     }
