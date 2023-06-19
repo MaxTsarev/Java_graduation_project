@@ -62,7 +62,7 @@ public class BooleanSearchEngine implements SearchEngine {
 
     public List<PageEntry> searchImpl(String word) {
         List<PageEntry> searchQueryPageList = new ArrayList<>();
-        List<PageEntry> mergeListOfPages = new ArrayList<>();
+        List<PageEntry> resultList = new ArrayList<>();
         String[] words = word.split(" ");
         for (String word2 : words) {
             if (word2.isEmpty()) continue;
@@ -73,22 +73,36 @@ public class BooleanSearchEngine implements SearchEngine {
 
         for (PageEntry pageEntry : searchQueryPageList) {
             List<PageEntry> intermediateListOfPages = new ArrayList<>();
+            //Проверяем pageEntry на дубликат в mergeListOfPages
+            boolean duplicate = false;
+            if (!resultList.isEmpty()) {
+                for (PageEntry page : resultList) {
+                    if (pageEntry.getPdfName().equals(page.getPdfName())) {
+                        duplicate = true;
+                        break;
+                    }
+                }
+            }
+            if (duplicate) continue;
+
             for (PageEntry entry : searchQueryPageList) {
                 if (pageEntry == entry) continue;
                 if (pageEntry.getPdfName().equals(entry.getPdfName())) {
                     intermediateListOfPages.add(entry);
                 }
             }
+
             intermediateListOfPages.add(pageEntry);
             int count = 0;
             for (PageEntry currentListPage : intermediateListOfPages) {
                 count += currentListPage.getCount();
             }
-            mergeListOfPages.add(new PageEntry(pageEntry.getPdfName(), pageEntry.getPage(), count));
+
+            resultList.add(new PageEntry(pageEntry.getPdfName(), pageEntry.getPage(), count));
         }
-        List<PageEntry> pEntry = new ArrayList<>(new HashSet<>(mergeListOfPages));
-        Collections.sort(pEntry);
-        return pEntry;
+
+        Collections.sort(resultList);
+        return resultList;
     }
 
 
