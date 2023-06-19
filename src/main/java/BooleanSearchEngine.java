@@ -73,7 +73,7 @@ public class BooleanSearchEngine implements SearchEngine {
 
         for (PageEntry pageEntry : searchQueryPageList) {
             List<PageEntry> intermediateListOfPages = new ArrayList<>();
-            //Проверяем pageEntry на дубликат в mergeListOfPages
+            //Проверяем pageEntry на дубликат resultList
             boolean duplicate = false;
             if (!resultList.isEmpty()) {
                 for (PageEntry page : resultList) {
